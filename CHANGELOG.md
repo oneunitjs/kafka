@@ -7,6 +7,35 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.1.0-beta.0] - 2026-11-10
+
+### Added
+
+- `KafkaConsumerOptions.handlerTimeoutMs` — per-handler timeout that aborts deadlocked handlers during shutdown via `KafkaTimeoutError`, preventing `awaitInFlight` from blocking indefinitely (§9.6).
+- `connectKafkaResource()` helper in `src/transport/kafkajs/factory.js` consolidating connect/error-wrap/disconnect-on-failure logic across producer, consumer, and admin factories (~30 lines of duplicated try/catch removed).
+- Bug report issue template at `.github/ISSUE_TEMPLATE/bug_report.md`.
+- "Reporting Bugs" section in `README.md` with issue link and required information.
+
+### Changed
+
+- Consumer `awaitInFlight` now checks `this.stopped` before accepting new handlers during shutdown drain (§9.4).
+- `releaseInFlightSlot` fixed — removed incorrect `inFlightSemaphore += 1` that desynchronized the semaphore when handing off to waiters.
+- `RpcClient.request()` refactored out of the Promise constructor anti-pattern into `executeRequest()`; timeout timer now correctly rejects pending requests.
+- `HealthReporter` uses public `KafkaApplication` accessors (`isClosed`, `diagnosticResources`, `registeredHealthChecks`, `registeredDiagnosticProviders`) instead of `as unknown as` type casts.
+- `adapters/logger.js` simplified to re-export `createLogger` with a `createLoggerAdapter` alias.
+- `package.json` repository, bugs, and homepage URLs updated to `github.com/oneunitjs/kafka`.
+- Version bumped from `1.0.0` to `1.1.0-beta.0`.
+- `package.json` `files` field narrowed to `dist`, `LICENSE`, `README.md`, `ARCHITECTURE.md`, `CHANGELOG.md`, `.env.example` (removed `src` and `examples`).
+- Removed dev-only directories from distribution: `bench/`, `examples/`, `scripts/`, `deploy/`, `.github/` CI workflows, `Dockerfile`, `.gitleaks.toml`.
+
+### Fixed
+
+- Stale `dist/` artifacts (`core/events`, `utils/deferred`, `utils/mutex`, `utils/once`) with no source counterpart removed from the package.
+- Duplicate documentation removed: `TESTING_STRATEGY.md` and `docs/TESTING.md`.
+- `bench/index.ts` imports updated from removed paths (`src/codecs.js`, `src/logger.js`, `src/middleware/registry.js`) to current locations (`src/adapters/codec.js`, `src/transport/kafkajs/logger.js`, `src/middleware/index.js`).
+- `middleware/index.ts` now re-exports `loggingMiddleware` (was missing).
+- Docker HEALTHCHECK now invokes `app.readiness()` instead of only importing the module.
+
 ## [1.0.0] - 2026-09-29
 
 ### Added
@@ -22,7 +51,7 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Renamed the package from `@bootstrap-framework/kafka` to `@oneunit/kafka`, matching
   the rest of the `@oneunit` workspace. The `repository`, `bugs`, and `homepage`
-  fields now point at `github.com/mayank040902/oneunit`.
+  fields now point at `github.com/oneunitjs/kafka`.
 - README install and import instructions, and the npm `keywords` field, now use the
   `@oneunit` scope.
 - `KafkaClient` de-duplicates concurrent `getProducer()`, `getConsumer()`, and
@@ -142,5 +171,6 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Workspace packages (`@bootstrap-framework/config`, workspace msgpack)
 - Runtime dependency on `@msgpack/msgpack`
 
-[Unreleased]: https://github.com/mayank040902/oneunit/compare/kafka-v1.0.0...HEAD
-[1.0.0]: https://github.com/mayank040902/oneunit/releases/tag/kafka-v1.0.0
+[Unreleased]: https://github.com/oneunitjs/kafka/compare/kafka-v1.1.0-beta.0...HEAD
+[1.1.0-beta.0]: https://github.com/oneunitjs/kafka/releases/tag/kafka-v1.1.0-beta.0
+[1.0.0]: https://github.com/oneunitjs/kafka/releases/tag/kafka-v1.0.0
