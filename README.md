@@ -1,6 +1,6 @@
 # @oneunit/kafka
 
-Production-ready, highly reliable Kafka client for Node.js built on top of [KafkaJS](https://kafka.js.org/). Works standalone or with any framework, offering type-safe topic contracts, built-in resilience, graceful lifecycle management, onion middleware, transactional plugins, and enterprise-grade observability.
+Beta release (v1.1.0-beta.0) — a highly reliable Kafka client for Node.js built on top of [KafkaJS](https://kafka.js.org/). Works standalone or with any framework, offering type-safe topic contracts, built-in resilience, graceful lifecycle management, onion middleware, transactional plugins, and enterprise-grade observability.
 
 [![npm version](https://img.shields.io/npm/v/@oneunit/kafka)](https://www.npmjs.com/package/@oneunit/kafka)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -80,17 +80,17 @@ Production-ready, highly reliable Kafka client for Node.js built on top of [Kafk
 
 ### Requirements
 - **Node.js**: `>= 20.0.0`
-- **Peer Dependency**: `kafkajs@^2.2.4`
+- **Dependency**: `kafkajs@2.2.4` (bundled as a runtime dependency — no separate install needed)
 - **Kafka Broker**: Apache Kafka 2.4+ (local, Docker, Strimzi, Confluent Cloud, AWS MSK, Redpanda, etc.)
 
 ### Install
 
 ```bash
-npm install @oneunit/kafka kafkajs
+npm install @oneunit/kafka
 # or
-pnpm add @oneunit/kafka kafkajs
+pnpm add @oneunit/kafka
 # or
-yarn add @oneunit/kafka kafkajs
+yarn add @oneunit/kafka
 ```
 
 ---
@@ -337,7 +337,7 @@ console.log(consumer.isPaused); // false
 
 ### Per-Handler Timeout (`handlerTimeoutMs`)
 
-For workloads where a handler can deadlock or hang indefinitely, `@oneunit/kafka` supports a per-handler timeout that guarantees shutdown will not block on a misbehaving handler:
+For workloads where a handler can deadlock or hang indefinitely, `@oneunit/kafka` supports a per-handler timeout that guarantees shutdown will not wait indefinitely on a misbehaving handler:
 
 ```ts
 const consumer = await kafka.consumer("order-consumer", "order-group", {
@@ -354,6 +354,7 @@ await consumer.start();
 **Behavior:**
 - The timeout starts when the handler begins execution.
 - If the handler exceeds `handlerTimeoutMs`, its `AbortSignal` is aborted (so cooperative handlers can exit early) and the promise rejects with `KafkaTimeoutError`.
+- **Important:** `AbortSignal` is cooperative — user code must observe `signal.aborted` to exit early. The package cannot forcibly terminate arbitrary JavaScript work; a timed-out handler's side effects may continue running in the background even after the semaphore slot is released.
 - The semaphore slot is released immediately, allowing `awaitInFlight` during shutdown to drain without waiting for the deadlocked handler.
 - Timeout errors flow through your configured retry policy — classify them as `"stop"` or `"dead-letter"` depending on your tolerance for message re-delivery.
 
@@ -395,6 +396,8 @@ const lagMap = consumer.getLag();
 Consumer handlers support automatic retries with exponential backoff and uniform random jitter:
 
 $$\text{delay} = \min(\text{maxDelayMs}, \text{baseDelayMs} \times 2^{\text{attempt}}) \times (1 + \text{jitter})$$
+
+where `jitter` is uniformly random in the range `[0, 0.2)` (i.e. `random(0, 0.2)`), adding up to 20% variation to each backoff delay.
 
 ```ts
 import { createRetryPolicy } from "@oneunit/kafka/resilience";
@@ -523,7 +526,7 @@ console.log("User received via RPC:", user.name);
 
 ## Transactions
 
-Execute exactly-once, atomic multi-topic publishes using Kafka transactions:
+Atomically publish records across Kafka topics using Kafka transactions:
 
 ```ts
 const result = await kafka.transaction(async (tx) => {
@@ -548,6 +551,9 @@ console.log("Transaction committed:", result.orderId);
 - If the callback throws an error, the transaction is **automatically aborted**, and the original error is rethrown.
 - If both the user callback fails and `abort()` fails, both errors are captured and reported.
 - Explicit `tx.commit()`, `tx.abort()`, and `tx.isActive()` methods are also available on the transaction object.
+
+> [!NOTE]
+> Kafka transactions provide atomicity for Kafka writes across multiple topics. They do **not** automatically provide exactly-once processing for external side effects (database writes, HTTP calls, etc.) made inside the transaction callback.
 
 ---
 
@@ -860,7 +866,6 @@ const kafka = await Kafka.create({
 ```
 
 When using Kubernetes, mount these as `secret` volumes rather than inline `env` values so they are not exposed in `kubectl describe` or process inspection.
-```
 
 ---
 
@@ -1055,7 +1060,10 @@ const kafka = await Kafka.create({
 });
 ```
 
-If handlers regularly exceed the timeout, they will be aborted via `AbortSignal` and their offsets will **not** be committed (preserving at-least-once semantics but increasing redelivery on restart).
+If handlers regularly exceed the timeout, they will be signaled for cancellation via `AbortSignal` and their offsets will **not** be committed (preserving at-least-once semantics but increasing redelivery on restart).
+
+> [!NOTE]
+> Cancellation is cooperative: user handlers must observe `signal.aborted` to exit early. The package cannot forcibly terminate arbitrary JavaScript work; timed-out handler side effects may continue running in the background even after the shutdown sequence moves on.
 
 ```ts
 await kafka.close();
@@ -1203,6 +1211,9 @@ The default graceful timeout is 15,000 ms.
 
 **Tuning**: Set `shutdown.timeout` to exceed your handler p99 latency plus a safety margin (e.g., if p99 is 8s, use 15–20s). If handlers regularly exceed the timeout, they abort via `AbortSignal` and offsets are not committed — increasing redelivery on restart.
 
+> [!NOTE]
+> `AbortSignal` cancellation is cooperative: handlers must observe `signal.aborted` to exit early. Arbitrary JavaScript work cannot be forcibly terminated.
+
 ```ts
 shutdown: {
     graceful: true,
@@ -1306,6 +1317,7 @@ The package exposes 22 targeted subpath exports defined in `package.json`:
 | `@oneunit/kafka/errors` | Structured `KafkaError` classes and `KafkaError.redact()`. |
 | `@oneunit/kafka/validation` | `isValidator`, `composeValidators`, `Validator`. |
 | `@oneunit/kafka/client` | Direct KafkaJS adapter functions (`createKafka`, `createProducer`, etc.). |
+| `@oneunit/kafka/logger` | Logger adapter (`createLogger`, `isLogger`, `resolveLoggerAndOptions`, `silentLogger`, `consoleLogger`). |
 | `@oneunit/kafka/kafka-client` | Legacy `KafkaClient` runtime class. |
 | `@oneunit/kafka/codecs` | Codec resolution and helpers. |
 | `@oneunit/kafka/adapters` | Logger, config, and codec adapters. |

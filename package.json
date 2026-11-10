@@ -1,7 +1,7 @@
 {
     "name": "@oneunit/kafka",
     "version": "1.1.0-beta.0",
-    "description": "Production-ready Kafka client for Node.js. Works standalone or with any framework logger, with optional JSON codec.",
+    "description": "Production-ready Kafka client for Node.js with managed consumers, transactions, RPC, plugins, schema registry, observability, and graceful shutdown.",
     "type": "module",
     "main": "./dist/index.js",
     "module": "./dist/index.js",
@@ -120,6 +120,7 @@
     },
     "files": [
         "dist",
+        "src",
         "LICENSE",
         "README.md",
         "ARCHITECTURE.md",
@@ -130,9 +131,16 @@
         "build": "tsc -p tsconfig.json",
         "typecheck": "tsc --noEmit --pretty false",
         "typecheck:types": "tsc -p tsconfig.typecheck.json",
-        "prepack": "npm run build",
+        "test": "tsx --test $(find test/unit -name '*.test.js' | sort)",
+        "test:watch": "tsx --test --watch $(find test/unit -name '*.test.js' | sort)",
+        "test:integration": "tsx --test test/integration/*.test.js",
+        "test:testcontainers": "tsx --test test/integration/kafka.testcontainers.test.js",
+        "lint": "eslint src test examples",
         "pack:check": "npm pack --dry-run",
-        "prepublishOnly": "npm run typecheck && npm run build"
+        "pack:verify": "npm run typecheck && npm run typecheck:types && npm test && npm run pack:check",
+        "verify": "npm run typecheck && npm run typecheck:types && npm test && npm run pack:verify",
+        "prepack": "npm run build",
+        "prepublishOnly": "npm run verify"
     },
     "keywords": [
         "kafka",

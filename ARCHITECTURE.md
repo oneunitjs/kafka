@@ -1,9 +1,9 @@
 # Architecture & System Design — @oneunit/kafka
 
-**Status:** Production (v1.0.0)  
+**Status:** Beta (v1.1.0-beta.0)  
 **Package:** `@oneunit/kafka`  
 **Target Runtime:** Node.js `>= 20.0.0` (ESM native, `"type": "module"`)  
-**Underlying Driver:** `kafkajs@^2.2.4`  
+**Underlying Driver:** `kafkajs@2.2.4`  
 
 ---
 
@@ -317,7 +317,7 @@ Provides a modular extension model with transactional rollback guarantees:
 - Supports `plain`, `scram-sha-256`, `scram-sha-512`, `aws`, and `oauthbearer`.
 - Validates supported mechanisms up-front, throwing `KafkaConfigError` with clear diagnostics.
 - Supports dynamic `OAuthTokenProvider` callbacks for token renewal.
-- Enforces mutual TLS requirement: `oauthbearer` mechanism requires TLS to be enabled.
+- Enforces TLS requirement: `oauthbearer` mechanism requires TLS to be enabled.
 
 #### TLS/SSL Configuration (`ssl.ts`)
 - Automatically detects whether certificate inputs (`ca`, `cert`, `key`) are inline PEM strings or filesystem paths.
