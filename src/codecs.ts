@@ -1,0 +1,15 @@
+export {
+    jsonCodec,
+    bytesCodec,
+    createCodecAdapter,
+    resolveCodec,
+    encode,
+    decode,
+    encodeToString,
+    decodeFromString,
+    createKafkaMessage,
+    createKafkaMessageString,
+    parseKafkaMessage,
+    parseKafkaMessageString,
+    type Codec,
+} from "./adapters/codec.js";

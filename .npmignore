@@ -1,0 +1,12 @@
+src
+test
+coverage
+*.tsbuildinfo
+tsconfig.json
+eslint.config.js
+CONTRIBUTING.md
+package-lock.json
+node_modules
+.env
+.env.*
+!.env.example
