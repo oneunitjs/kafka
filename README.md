@@ -1335,7 +1335,7 @@ npm run build
 # Run TypeScript typechecking on src/
 npm run typecheck
 
-# Run TypeScript type tests on test/types/
+# Run TypeScript type tests on src/
 npm run typecheck:types
 
 # Run ESLint
