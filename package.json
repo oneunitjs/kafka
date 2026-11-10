@@ -1,6 +1,6 @@
 {
     "name": "@oneunit/kafka",
-    "version": "1.0.0",
+    "version": "1.1.0-beta.0",
     "description": "Production-ready Kafka client for Node.js. Works standalone or with any framework logger, with optional JSON codec.",
     "type": "module",
     "main": "./dist/index.js",
