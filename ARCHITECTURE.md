@@ -534,4 +534,4 @@ Before submitting changes, run the full verification pipeline:
 ```bash
 npm run verify
 ```
-This runs TypeScript checking (`npm run typecheck`), type test verification (`npm run typecheck:types`), unit tests (`npm test`), and package packaging validation (`npm run pack:verify`).
+This runs TypeScript checking (`npm run typecheck`), type test verification (`npm run typecheck:types`), and package packaging validation (`npm run pack:verify`).

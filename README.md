@@ -1338,16 +1338,13 @@ npm run typecheck
 # Run TypeScript type tests on test/types/
 npm run typecheck:types
 
-# Run unit tests
-npm test
-
 # Run ESLint
 npm run lint
 
 # Run prepack verification
-npm run pack:verify
+npm run pack:check
 
-# Run complete verification suite (typecheck + tests + packaging)
+# Run complete verification suite (typecheck + packaging)
 npm run verify
 ```
 
@@ -1359,12 +1356,8 @@ npm run verify
 
 ## Testing
 
-- Unit tests: `npm test`
-- Integration tests (pre-running broker): `KAFKA_INTEGRATION=1 npm run test:integration`
-- Testcontainers (Docker required): `npm run test:testcontainers`
-
-See [`docs/TESTING.md`](docs/TESTING.md) for the full Testcontainers strategy,
-container lifecycle management, asynchronous setup and cleanup guidance.
+Tests are not included in the published package. See the repository source for
+the full unit and integration test suite.
 
 ---
 
