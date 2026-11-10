@@ -126,10 +126,7 @@
     "files": [
         "dist",
         "LICENSE",
-        "README.md",
-        "ARCHITECTURE.md",
-        "CHANGELOG.md",
-        ".env.example"
+        "README.md"
     ],
     "scripts": {
         "build": "tsc -p tsconfig.json",
