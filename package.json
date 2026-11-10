@@ -1,0 +1,178 @@
+{
+    "name": "@oneunit/kafka",
+    "version": "1.0.0",
+    "description": "Production-ready Kafka client for Node.js. Works standalone or with any framework logger, with optional JSON codec.",
+    "type": "module",
+    "main": "./dist/index.js",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js",
+            "default": "./dist/index.js"
+        },
+        "./client": {
+            "types": "./dist/transport/kafkajs/adapter.d.ts",
+            "import": "./dist/transport/kafkajs/adapter.js",
+            "default": "./dist/transport/kafkajs/adapter.js"
+        },
+        "./codecs": {
+            "types": "./dist/codecs.d.ts",
+            "import": "./dist/codecs.js",
+            "default": "./dist/codecs.js"
+        },
+        "./adapters": {
+            "types": "./dist/adapters/index.d.ts",
+            "import": "./dist/adapters/index.js",
+            "default": "./dist/adapters/index.js"
+        },
+        "./admin": {
+            "types": "./dist/admin.d.ts",
+            "import": "./dist/admin.js",
+            "default": "./dist/admin.js"
+        },
+        "./application": {
+            "types": "./dist/public/application.d.ts",
+            "import": "./dist/public/application.js",
+            "default": "./dist/public/application.js"
+        },
+        "./consumer": {
+            "types": "./dist/consumer/consumer.d.ts",
+            "import": "./dist/consumer/consumer.js",
+            "default": "./dist/consumer/consumer.js"
+        },
+        "./errors": {
+            "types": "./dist/errors/index.d.ts",
+            "import": "./dist/errors/index.js",
+            "default": "./dist/errors/index.js"
+        },
+        "./env": {
+            "types": "./dist/core/context.d.ts",
+            "import": "./dist/core/context.js",
+            "default": "./dist/core/context.js"
+        },
+        "./kafka": {
+            "types": "./dist/public/kafka.d.ts",
+            "import": "./dist/public/kafka.js",
+            "default": "./dist/public/kafka.js"
+        },
+        "./kafka-client": {
+            "types": "./dist/core/runtime.d.ts",
+            "import": "./dist/core/runtime.js",
+            "default": "./dist/core/runtime.js"
+        },
+        "./logger": {
+            "types": "./dist/transport/kafkajs/logger.d.ts",
+            "import": "./dist/transport/kafkajs/logger.js",
+            "default": "./dist/transport/kafkajs/logger.js"
+        },
+        "./middleware": {
+            "types": "./dist/middleware/index.d.ts",
+            "import": "./dist/middleware/index.js",
+            "default": "./dist/middleware/index.js"
+        },
+        "./observability": {
+            "types": "./dist/observability/index.d.ts",
+            "import": "./dist/observability/index.js",
+            "default": "./dist/observability/index.js"
+        },
+        "./plugins": {
+            "types": "./dist/plugins/index.d.ts",
+            "import": "./dist/plugins/index.js",
+            "default": "./dist/plugins/index.js"
+        },
+        "./producer": {
+            "types": "./dist/producer/index.d.ts",
+            "import": "./dist/producer/index.js",
+            "default": "./dist/producer/index.js"
+        },
+        "./resilience": {
+            "types": "./dist/resilience/index.d.ts",
+            "import": "./dist/resilience/index.js",
+            "default": "./dist/resilience/index.js"
+        },
+        "./rpc": {
+            "types": "./dist/rpc/index.d.ts",
+            "import": "./dist/rpc/index.js",
+            "default": "./dist/rpc/index.js"
+        },
+        "./transaction": {
+            "types": "./dist/producer/transaction.d.ts",
+            "import": "./dist/producer/transaction.js",
+            "default": "./dist/producer/transaction.js"
+        },
+        "./validation": {
+            "types": "./dist/validation/index.d.ts",
+            "import": "./dist/validation/index.js",
+            "default": "./dist/validation/index.js"
+        },
+        "./messaging": {
+            "types": "./dist/messaging/index.d.ts",
+            "import": "./dist/messaging/index.js",
+            "default": "./dist/messaging/index.js"
+        },
+        "./utils": {
+            "types": "./dist/utils/index.d.ts",
+            "import": "./dist/utils/index.js",
+            "default": "./dist/utils/index.js"
+        }
+    },
+    "files": [
+        "dist",
+        "LICENSE",
+        "README.md",
+        "ARCHITECTURE.md",
+        "CHANGELOG.md",
+        ".env.example"
+    ],
+    "scripts": {
+        "build": "tsc -p tsconfig.json",
+        "typecheck": "tsc --noEmit --pretty false",
+        "typecheck:types": "tsc -p tsconfig.typecheck.json",
+        "prepack": "npm run build",
+        "pack:check": "npm pack --dry-run",
+        "prepublishOnly": "npm run typecheck && npm run build"
+    },
+    "keywords": [
+        "kafka",
+        "kafkajs",
+        "producer",
+        "consumer",
+        "admin",
+        "nodejs",
+        "microservice",
+        "bootstrap-framework",
+        "oneunit"
+    ],
+    "author": "mayank",
+    "license": "MIT",
+    "sideEffects": false,
+    "engines": {
+        "node": ">=20"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/oneunitjs/kafka.git",
+        "directory": "packages/kafka"
+    },
+    "bugs": {
+        "url": "https://github.com/oneunitjs/kafka/issues"
+    },
+    "homepage": "https://github.com/oneunitjs/kafka#readme",
+    "dependencies": {
+        "kafkajs": "2.2.4"
+    },
+    "devDependencies": {
+        "@testcontainers/kafka": "^12.2.1",
+        "@types/node": "^22.13.10",
+        "eslint": "^9.22.0",
+        "testcontainers": "^12.2.1",
+        "tsx": "^4.20.5",
+        "typescript": "^5.8.2"
+    }
+}

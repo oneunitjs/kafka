@@ -1353,3 +1353,22 @@ npm run verify
 
 See [`docs/TESTING.md`](docs/TESTING.md) for the full Testcontainers strategy,
 container lifecycle management, asynchronous setup and cleanup guidance.
+
+---
+
+## Reporting Bugs
+
+Found a bug? Please open an issue at:
+<https://github.com/oneunitjs/kafka/issues>
+
+When reporting, include the following to help us diagnose and fix quickly:
+
+1. **Version** of `@oneunit/kafka` (check `package.json` or `npm ls @oneunit/kafka`).
+2. **Node.js version** (`node --version`).
+3. **Minimal reproduction** — a small code snippet that triggers the issue.
+4. **Expected behavior** vs. **actual behavior**.
+5. **Error stack trace** (if applicable) — paste the full output, including any `cause` chain.
+6. **Kafka broker details** — broker version, SASL/TLS configuration (omit secrets).
+
+For security vulnerabilities, please do **not** open a public issue. Instead, contact the maintainers through the repository's security advisory process.
+
